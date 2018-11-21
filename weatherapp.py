@@ -66,3 +66,15 @@ for char in rp5_content[rp5_temp_tag_start:]:
 
 print('RP5.ua: \n')
 print(f'Temperature: {html.unescape(rp5_temp)}\n')
+
+
+RP5_START_CONDITIONS_TAG = '<div class="ArchiveInfo">'
+RP5_CONDITIONS_TAG = 'F</span>,'
+rp5_conditions_tag_size = len(RP5_CONDITIONS_TAG)
+rp5_conditions_tag_index = rp5_content.find(RP5_CONDITIONS_TAG, rp5_content.find(RP5_START_CONDITIONS_TAG))
+rp5_conditions_tag_start = rp5_conditions_tag_index + rp5_conditions_tag_size
+rp5_conditions_end_tag = '<span'
+rp5_conditions_end_tag_index = rp5_content.find(rp5_conditions_end_tag, rp5_conditions_tag_index)
+rp5_conditions = rp5_content[rp5_conditions_tag_start:rp5_conditions_end_tag_index]
+
+print(f'Weather condidtions: {rp5_conditions}\n')
