@@ -114,6 +114,12 @@ print('sinoptik.ua: \n')
 print(f'Temperature: {html.unescape(sinoptik_temp)}\n')
 
 
+def get_request_headers():
+	"""
+	"""
+	return {'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64;)'}
+
+
 def main():
 	""" Main entry point.
 	"""
