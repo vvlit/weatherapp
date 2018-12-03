@@ -129,6 +129,23 @@ def get_page_source(url):
 	return page_source.decode('utf-8')
 
 
+def get_tag_content(page_content, tag):
+	"""
+	"""
+
+	tag_index = page_content.find(tag)
+	tag_size = len(tag)
+	value_start = tag_index + tag_size
+
+	content = ''
+	for c in page_content[value_start:]:
+		if c != '<':
+			content += c
+		else:
+			break
+	return content
+
+
 def main():
 	""" Main entry point.
 	"""
