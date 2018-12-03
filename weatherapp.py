@@ -146,6 +146,13 @@ def get_tag_content(page_content, tag):
 	return content
 
 
+def get_weather_info(page_content, tags):
+	"""
+	"""
+
+	return tuple([get_tag_content(page_content, tag) for tag in tags])
+
+
 def main():
 	""" Main entry point.
 	"""
