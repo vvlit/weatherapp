@@ -112,3 +112,20 @@ sinoptik_temp = sinoptik_content[sinoptik_temp_tag_start:sinoptik_temp_end_tag_i
 
 print('sinoptik.ua: \n')
 print(f'Temperature: {html.unescape(sinoptik_temp)}\n')
+
+
+def main():
+	""" Main entry point.
+	"""
+
+	weather_sites = {"AccuWeather": (ACCU_URL, ACCU_TAGS),
+	                 "RP5": (RP5_URL, RP5_TAGS)}
+	for name in weather_sites:
+		url, tags = weather_sites[name]
+		content = get_page_source(url)
+		temp, condition = get_weather_info(content, tags)
+		produce_output(name, temp, condition)
+
+
+if __name__ == '__main__':
+	main()
