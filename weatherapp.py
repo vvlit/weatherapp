@@ -39,7 +39,39 @@ def get_page_source(url):
     return page_source.decode('utf-8')
 
 
+def get_weather_info_accu(page_content):
+    """
+    """
 
+    city_page = BeautifulSoup(page_content, 'html.parser')
+    current_day_section = city_page.find(
+        'li', class_=re.compile('(day|night) current first cl'))
+
+    weather_info = {}
+    if current_day_section:
+        current_day_url = current_day_section.find('a').attrs['href']
+        if current_day_url:
+            current_day_page = get_page_source(current_day_url)
+            if current_day_page:
+                current_day = \
+                    BeautifulSoup(current_day_page, 'html.parser')
+                weather_details = \
+                    current_day.find('div', attrs={'id': 'detail-now'})
+                condition = weather_details.find('span', class_='cond')
+                if condition:
+                    weather_info['cond'] = condition.text
+                temp = weather_details.find('span', class_='large-temp')
+                if temp:
+                    weather_info['temp'] = temp.text
+                feel_temp = weather_details.find('span', class_='small-temp')
+                if feel_temp:
+                    weather_info['feel_temp'] = feel_temp.text
+
+                wind_info = weather_details.find_all('li', class_='wind')
+                if wind_info:
+                    weather_info['wind'] = \
+                        ''.join(map(lambda t: t.text.strip(), wind_info))
+    return weather_info
 
 
 def produce_output(provider_name, temp, condition):
