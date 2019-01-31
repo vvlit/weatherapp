@@ -74,6 +74,33 @@ def get_weather_info_accu(page_content):
     return weather_info
 
 
+def get_weather_info_rp5(page_content):
+    """
+    """
+
+    city_page = BeautifulSoup(page_content, 'html.parser')
+    current_day = city_page.find('div', attrs={'id': 'archiveString'})
+    
+    weather_info = {}
+    if current_day:
+        condition = current_day.find('div', class_='ArchiveInfo')
+        if condition:
+             weather_info['cond'] = condition.text
+        temp_info = current_day.find('div', attrs={'id': 'ArchTemp'})
+        temp = temp_info.find('span', class_='t_0')
+        if temp:
+            weather_info['temp'] = temp.text
+        feel_temp_info = current_day.find('div', class_='ArchiveTempFeeling')
+        feel_temp = feel_temp_info.find('span', class_='t_0')
+        if feel_temp:
+            weather_info['feel_temp'] = feel_temp.text
+        wind_info = current_day.find_all('span', class_='wv_0')
+        if wind_info:
+            weather_info['wind'] = \
+                ''.join(map(lambda t: t.text.strip(), wind_info))
+    return weather_info
+
+
 def produce_output(provider_name, temp, condition):
     """
     """
