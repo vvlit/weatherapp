@@ -147,7 +147,7 @@ def main(argv):
 
     weather_sites = {"AccuWeather": (ACCU_URL, ACCU_TAGS),
                      "RP5": (RP5_URL, RP5_TAGS),
-                     "Sinoptic": (SINOPTIK_URL, SINOPTIK_TAGS)}
+                     "sinoptik": (SINOPTIK_URL, SINOPTIK_TAGS)}
     
     KNOWN_COMMANDS = {'accu': 'AccuWeather', 'rp5': 'RP5',
                       'sinoptik': 'sinoptik'}
