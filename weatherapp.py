@@ -2,7 +2,9 @@
 """Weather app project.
 """
 
+import sys
 import html
+import argparse
 from urllib.request import urlopen, Request
 
 ACCU_URL = ("https://www.accuweather.com/uk/ua/dniprodzerzhynsk/322726/"
@@ -24,6 +26,7 @@ SINOPTIK_TAGS = ('<p class="today-temp">',
 def get_request_headers():
     """
     """
+
     return {'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64;)'}
 
 
@@ -69,19 +72,55 @@ def produce_output(provider_name, temp, condition):
     print(f'Condition: {condition}\n')
 
 
-def main():
+def main(argv):
     """ Main entry point.
     """
 
     weather_sites = {"AccuWeather": (ACCU_URL, ACCU_TAGS),
                      "RP5": (RP5_URL, RP5_TAGS),
                      "Sinoptic": (SINOPTIK_URL, SINOPTIK_TAGS)}
-    for name in weather_sites:
-        url, tags = weather_sites[name]
+    
+    KNOWN_COMMANDS = {'accu': 'AccuWeather', 'rp5': 'RP5',
+                      'sinoptik': 'sinoptik'}
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('command1',
+                        help='Enter service name: accu, rp5 or sinoptik',
+                        nargs='?')
+    parser.add_argument('command2',
+                        help='Enter service name: accu, rp5 or sinoptik',
+                        nargs='?')
+    parser.add_argument('command3',
+                        help='Enter service name: accu, rp5 or sinoptik',
+                        nargs='?')
+    params = parser.parse_args(argv)
+    Comands = vars(params)
+    comands = Comands.values()
+
+    weather_sites_selected = {}
+
+    for command in comands:
+        if command:
+            if command in KNOWN_COMMANDS:
+                weather_sites_selected[KNOWN_COMMANDS[command]]= \
+                    weather_sites[KNOWN_COMMANDS[command]]
+            else:
+                print("Unknown command provided!")
+                sys.exit(1)
+
+    if weather_sites_selected == {}:
+        weather_sites_selected = weather_sites
+
+    for name in weather_sites_selected:
+        url, tags = weather_sites_selected[name]
         content = get_page_source(url)
-        temp, condition = get_weather_info(content, tags)
-        produce_output(name, temp, condition)
+        if name == "AccuWeather":
+            produce_output(get_weather_info_accu(content), name)
+        if name == "RP5":
+            produce_output(get_weather_info_rp5(content), name)
+        if name == "sinoptik":
+            produce_output(get_weather_info_sinoptic(content), name)
 
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1:])
