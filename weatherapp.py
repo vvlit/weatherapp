@@ -131,13 +131,14 @@ def get_weather_info_sinoptic(page_content):
     return weather_info
 
 
-def produce_output(provider_name, temp, condition):
+def produce_output(info, name):
     """
     """
 
-    print(f'\n {provider_name}:')
-    print(f'Temperature: {html.unescape(temp)}\n')
-    print(f'Condition: {condition}\n')
+    print('\n{}: \n'.format(name))
+
+    for key, value in info.items():
+        print(f'{key}: {html.unescape(value)}')
 
 
 def main(argv):
