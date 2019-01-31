@@ -2,9 +2,11 @@
 """Weather app project.
 """
 
+import re
 import sys
 import html
 import argparse
+from bs4 import BeautifulSoup
 from urllib.request import urlopen, Request
 
 ACCU_URL = ("https://www.accuweather.com/uk/ua/dniprodzerzhynsk/322726/"
@@ -98,6 +100,34 @@ def get_weather_info_rp5(page_content):
         if wind_info:
             weather_info['wind'] = \
                 ''.join(map(lambda t: t.text.strip(), wind_info))
+    return weather_info
+
+
+def get_weather_info_sinoptic(page_content):
+    """
+    """
+
+    city_page = BeautifulSoup(page_content, 'html.parser')
+    current_day = city_page.find('div', attrs={'id': 'bd1c'})
+    
+    weather_info = {}
+    if current_day:
+        condition = current_day.find('div', class_='wDescription clearfix')
+        if condition:
+            weather_info['cond'] = condition.text
+        temp_info = current_day.find('tr', class_='temperature')
+        temp = temp_info.find('td', class_='cur')
+        if temp:
+            weather_info['temp'] = temp.text
+        feel_temp_info = current_day.find('tr', class_='temperatureSens')
+        feel_temp = feel_temp_info.find('td', class_='cur')
+        if feel_temp:
+            weather_info['feel_temp'] = feel_temp.text
+        wind_info = current_day.find_all('td', class_='cur')
+        for wi in wind_info:
+            wind = wi.find('div', class_='wind')
+            if wind:
+                weather_info['wind'] = wind.attrs['data-tooltip']
     return weather_info
 
 
